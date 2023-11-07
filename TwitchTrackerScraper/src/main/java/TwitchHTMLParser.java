@@ -77,7 +77,7 @@ public class TwitchHTMLParser {
         return new String(Files.readAllBytes(Paths.get(filePath)));
     }
 
-    public static List<String> extractTitleFromHtml() {
+    public static List<String> getTitleFromHtml() {
         String filePath = "TwitchHTML//twitch.htm";
         try {
             String htmlContent = loadHTMLContent(filePath);

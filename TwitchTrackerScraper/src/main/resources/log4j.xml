@@ -8,6 +8,16 @@
         </layout>
     </appender>
 
+    <!-- Logger for Hibernate SQL -->
+    <logger name="org.hibernate.SQL">
+        <level value="ERROR"/>
+    </logger>
+    
+    <!-- Logger for Hibernate type -->
+    <logger name="org.hibernate.type.descriptor.sql">
+        <level value="ERROR"/>
+    </logger>
+
     <root>
         <level value="WARN" />
         <appender-ref ref="console" />
