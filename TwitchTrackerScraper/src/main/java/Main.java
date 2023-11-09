@@ -21,49 +21,77 @@ public class Main {
         
         clearAllTables(em);
 
+        TTrackerScraper scraper = new TTrackerScraper();
 
-        
-        Streamer newStreamer = new Streamer("some_streamer");
+        Streamer testStreamer = new Streamer("kanae_2434");
 
-
-        
-        // Now, we create an instance of Streams using the constructor
-        Streams stream = new Streams("s12345", "Random Stream Title", LocalDateTime.now());
-
-        // Add the stream to the Streamer
-        newStreamer.addStream(stream);        
-
-        // Persist the Streamer object
-        em.persist(newStreamer);
-
-        // Commit the transaction
+        em.persist(testStreamer);
         em.getTransaction().commit();
 
-        // Close the EntityManager and EntityManagerFactory
+        System.out.println(getAllStreamers().size());
+
+        scraper.scrapeBasicDetails(testStreamer);
+
         em.close();
 
 
-        EntityManager em1 = JPAUtil.getEntityManager();   
-        em1.getTransaction().begin();
+        scraper.scrapeBasicDetails(testStreamer);
 
-        // Construct a JPQL query to fetch the Streams associated with a particular Streamer
-        TypedQuery<Streamer> query = em1.createQuery("SELECT s FROM Streamer s", Streamer.class);
-        List<Streamer> allStreamers = query.getResultList();
+        List<Streamer> streamers = getAllStreamers();
+
+        System.out.println("size: " + streamers.size());
+
+        System.out.println("streamer: "+ streamers.get(0).getNameUrl());
+        System.out.println("getFollowers: "+ streamers.get(0).getFollowers());
+        System.out.println("getMinutesStreamed: "+ streamers.get(0).getMinutesStreamed());
+        System.out.println("getAverageViewers: "+ streamers.get(0).getAverageViewers());
+        System.out.println("getPeakViewers: "+ streamers.get(0).getPeakViewers());
+
+//          List<String> streamerNames = TwitchHTMLParser.getTitleFromHtml();
+//         createStreamerFromNames(streamerNames);
+    }
+        
+
+       
+
+        
+
+        
 
 
-        System.out.println("Printing results...");
-        for (Streamer stream1 : allStreamers) {
-            Streams prevStreams = stream1.getStreams().get(0);
-            System.out.println("Stream ID: " + stream1.getId());
-            System.out.println("Title: " + stream1.getNameUrl());
-            System.out.println("Streams: " + prevStreams.getTitle());
+    public static void createStreamerFromNames(List<String> streamerNames ){
+        EntityManager em = JPAUtil.getEntityManager();  
+        em.getTransaction().begin();
+
+        for (String streamerName : streamerNames) {
+            Streamer streamer = new Streamer(streamerName);
+            em.persist(streamer);
         }
 
+        em.getTransaction().commit();
 
+        TypedQuery<Streamer> query = em.createQuery("SELECT s FROM Streamer s", Streamer.class);
+        List<Streamer> reteNames = query.getResultList();
 
+        System.out.println("restSize: "+ reteNames.size());
 
+        em.close();
 
-        //List<String> names = TwitchHTMLParser.getTitleFromHtml();
+    }
+
+    public static List<Streamer> getAllStreamers() {
+        // Create a JPQL query to select all Streamer objects
+        String jpql = "SELECT s FROM Streamer s";
+
+        EntityManager em = JPAUtil.getEntityManager();  
+
+        // Create the query
+        Query query = em.createQuery(jpql);
+
+        // Execute the query and return the results as a list of Streamer objects
+        List<Streamer> streamers = query.getResultList();
+
+        return streamers;
     }
 
 

@@ -10,18 +10,81 @@ public class Streamer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String nameUrl;
 
-    @OneToMany(mappedBy = "streamer", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "streamer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Streams> streams = new ArrayList<>();
+
+    //Information from Twitch
+    private double minutesStreamed = 0;
+    private double averageViewers = 0;
+    private double peakViewers = 0;
+    private double hoursWatched = 0;
+    private double followersPerHour = 0;
+    private double followers = 0;
+
 
     // Default constructor
     public Streamer() {}
 
     // Constructor with nameUrl parameter
     public Streamer(String nameUrl) {
+        if(nameUrl == null || nameUrl.isEmpty()) {
+            throw new IllegalArgumentException("Streamer nameUrl cannot be null or empty");
+        }
         this.nameUrl = nameUrl;
+    }
+
+
+    // Getter and Setter methods
+
+    public double getFollowers(){
+        return this.followers;
+    }
+
+    public void setFollowers(double followers) {
+        this.followers = followers;
+    }
+
+    public double getMinutesStreamed() {
+        return minutesStreamed ;
+    }
+
+    public void setMinutesStreamed(double minutesStreamed ) {
+        this.minutesStreamed  = minutesStreamed ;
+    }
+
+    public double getAverageViewers() {
+        return averageViewers;
+    }
+
+    public void setAverageViewers(double averageViewers) {
+        this.averageViewers = averageViewers;
+    }
+
+    public double getPeakViewers() {
+        return peakViewers;
+    }
+
+    public void setPeakViewers(double peakViewers) {
+        this.peakViewers = peakViewers;
+    }
+
+    public double getHoursWatched() {
+        return hoursWatched;
+    }
+
+    public void setHoursWatched(double hoursWatched) {
+        this.hoursWatched = hoursWatched;
+    }
+
+    public double getFollowersPerHour() {
+        return followersPerHour;
+    }
+
+    public void setFollowersPerHour(double followersPerHour) {
+        this.followersPerHour = followersPerHour;
     }
 
     // Getters and Setters
