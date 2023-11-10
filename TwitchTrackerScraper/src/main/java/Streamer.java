@@ -38,7 +38,6 @@ public class Streamer {
 
 
     // Getter and Setter methods
-
     public double getFollowers(){
         return this.followers;
     }

@@ -9,6 +9,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+
 
 public class TwitchHTMLParser {
 
@@ -77,8 +80,7 @@ public class TwitchHTMLParser {
         return new String(Files.readAllBytes(Paths.get(filePath)));
     }
 
-    public static List<String> getTitleFromHtml() {
-        String filePath = "TwitchHTML//twitch.htm";
+    public static List<String> getUsernames(String filePath) {
         try {
             String htmlContent = loadHTMLContent(filePath);
             List<String> titles = extractTitles(htmlContent);
@@ -89,6 +91,26 @@ public class TwitchHTMLParser {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+        public static void createStreamerFromNames(List<String> streamerNames ){
+        EntityManager em = JPAUtil.getEntityManager();  
+        em.getTransaction().begin();
+
+        for (String streamerName : streamerNames) {
+            Streamer streamer = new Streamer(streamerName);
+            em.persist(streamer);
+        }
+
+        em.getTransaction().commit();
+
+        TypedQuery<Streamer> query = em.createQuery("SELECT s FROM Streamer s", Streamer.class);
+        List<Streamer> reteNames = query.getResultList();
+
+        System.out.println("restSize: "+ reteNames.size());
+
+        em.close();
     }
 
 
