@@ -126,13 +126,15 @@ public class Main {
     }
 
     private static void displayStreamerData(Streamer streamer){
-        System.out.println(streamer.getNameUrl());
-        System.out.println(streamer.getFollowers());
-        System.out.println(streamer.getAverageViewers());
-        System.out.println(streamer.getPeakViewers());
-        System.out.println(streamer.getHoursWatched());
-        System.out.println(streamer.getFollowersPerHour());
-        System.out.println(streamer.getMinutesStreamed());
+        System.out.println("NameUrl: " + streamer.getNameUrl());
+        System.out.println("Followers: " + streamer.getFollowers());
+        System.out.println("Average Viewers: " + streamer.getAverageViewers());
+        System.out.println("Peak Viewers: " + streamer.getPeakViewers());
+        System.out.println("Hours Watched: " + streamer.getHoursWatched());
+        System.out.println("Followers Per Hour: " + streamer.getFollowersPerHour());
+        System.out.println("Minutes Streamed: " + streamer.getMinutesStreamed());
+        System.out.println("Last scraped: " + streamer.getLastScraped());
+
     }
 
 

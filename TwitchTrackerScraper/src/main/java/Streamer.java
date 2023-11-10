@@ -1,3 +1,4 @@
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -15,6 +16,8 @@ public class Streamer {
 
     @OneToMany(mappedBy = "streamer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Streams> streams = new ArrayList<>();
+
+    private LocalDateTime lastScraped;
 
     //Information from Twitch
     private double minutesStreamed = 0;
@@ -38,6 +41,14 @@ public class Streamer {
 
 
     // Getter and Setter methods
+    public LocalDateTime getLastScraped() {
+        return lastScraped;
+    }
+
+    public void setLastScrapedToNow() {
+        this.lastScraped = LocalDateTime.now();
+    }
+
     public double getFollowers(){
         return this.followers;
     }

@@ -65,6 +65,7 @@ public class TTrackerScraper {
                     streamer.setAverageViewers(avgViewers);
                     streamer.setPeakViewers(maxViewers);
                     streamer.setHoursWatched(hoursWatched);
+                    streamer.setLastScrapedToNow();
 
                     if (!em.contains(streamer)) {
                     em.merge(streamer); // Use merge instead of persist
