@@ -8,19 +8,22 @@
         </layout>
     </appender>
 
-    <!-- Logger for Hibernate SQL -->
-    <logger name="org.hibernate.SQL">
+    <!-- Suppress Hibernate SQL logging -->
+    <logger name="org.hibernate.SQL" additivity="false">
         <level value="ERROR"/>
-    </logger>
-    
-    <!-- Logger for Hibernate type -->
-    <logger name="org.hibernate.type.descriptor.sql">
-        <level value="ERROR"/>
+        <appender-ref ref="console"/>
     </logger>
 
+    <!-- Suppress Hibernate type descriptor logging -->
+    <logger name="org.hibernate.type.descriptor.sql" additivity="false">
+        <level value="ERROR"/>
+        <appender-ref ref="console"/>
+    </logger>
+
+    <!-- Root Logger -->
     <root>
-        <level value="WARN" />
-        <appender-ref ref="console" />
+        <level value="WARN"/>
+        <appender-ref ref="console"/>
     </root>
 
 </log4j:configuration>

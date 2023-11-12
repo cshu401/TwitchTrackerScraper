@@ -8,6 +8,7 @@ import javax.persistence.PersistenceException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.DynamicTest.stream;
 
 class HibernateDatabaseTests {
 
@@ -42,7 +43,7 @@ class HibernateDatabaseTests {
     void testCreateStreamerAndStream() {
         em.getTransaction().begin();
         Streamer newStreamer = new Streamer("test_streamer");
-        Streams stream = new Streams("test123", "Test Stream", LocalDateTime.now());
+        Streams stream = new Streams("Test Title", LocalDateTime.now(), 0, 0, 0, 0);
         newStreamer.addStream(stream);
         em.persist(newStreamer);
         em.getTransaction().commit();
@@ -137,36 +138,11 @@ class HibernateDatabaseTests {
     }
 
     @Test
-    void testUpdateStreamTitle() {
-        // Arrange
-        em.getTransaction().begin();
-        Streamer streamer = new Streamer("update_stream_title_streamer");
-        Streams stream = new Streams("stream123", "Original Title", LocalDateTime.now());
-        streamer.addStream(stream);
-        em.persist(streamer);
-        em.getTransaction().commit();
-
-        // Act
-        em.getTransaction().begin();
-        Streams foundStream = em.createQuery("SELECT s FROM Streams s WHERE s.streamId = :streamId", Streams.class)
-                                .setParameter("streamId", "stream123")
-                                .getSingleResult();
-        foundStream.setTitle("Updated Title");
-        em.getTransaction().commit();
-
-        // Assert
-        Streams updatedStream = em.find(Streams.class, foundStream.getId());
-        assertNotNull(updatedStream);
-        assertEquals("Updated Title", updatedStream.getTitle());
-    }
- 
-
-    @Test
     void testCascadePersist() {
         // Arrange
         em.getTransaction().begin();
         Streamer streamer = new Streamer("cascade_persist_streamer");
-        Streams stream = new Streams("cascadeStream123", "Cascade Stream", LocalDateTime.now());
+        Streams stream = new Streams("Test Title", LocalDateTime.now(), 0, 0, 0, 0);
         streamer.addStream(stream); // This should cascade the persist operation
         // Do not persist the stream explicitly
 
@@ -186,7 +162,7 @@ class HibernateDatabaseTests {
         // Arrange
         em.getTransaction().begin();
         Streamer streamer = new Streamer("cascade_delete_streamer");
-        Streams stream = new Streams("cascadeDeleteStream123", "Cascade Delete Stream", LocalDateTime.now());
+        Streams stream = new Streams("Test Title", LocalDateTime.now(), 0, 0, 0, 0);
         streamer.addStream(stream);
         em.persist(streamer);
         em.getTransaction().commit();

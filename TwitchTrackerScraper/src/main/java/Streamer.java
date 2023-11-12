@@ -14,7 +14,7 @@ public class Streamer {
     @Column(unique = true, nullable = false)
     private String nameUrl;
 
-    @OneToMany(mappedBy = "streamer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "streamer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Streams> streams = new ArrayList<>();
 
     private LocalDateTime lastScraped;
