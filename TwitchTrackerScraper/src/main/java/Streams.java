@@ -110,4 +110,18 @@ public class Streams {
         this.date = date;
     }
 
+    @Override
+    public String toString() {
+        return "Stream{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", date=" + date +
+                ", averageViews=" + averageViews +
+                ", maxViews=" + maxViews +
+                ", followers=" + followers +
+                ", durationMinutes=" + durationMinutes +
+                ", streamerId=" + (streamer != null ? streamer.getId() : "null") +
+                '}';
+    }
+
 }

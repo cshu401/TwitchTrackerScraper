@@ -267,6 +267,20 @@ public class TTrackerScraper {
             }
         }
     }
+
+    public static void scrapeSingleStreamer(String streamerUrl){
+        EntityManager em = JPAUtil.getEntityManager();  
+        em.getTransaction().begin();
+        TTrackerScraper scraper = new TTrackerScraper();
+
+        Streamer streamer = StreamerTools.getStreamerByNameUrl(streamerUrl);
+        
+        
+        scraper.scrapeBasicDetails(streamer);
+        scraper.scrapeAllStreams(streamer);
+        em.getTransaction().commit();
+        em.close();
+    }
     
 
 

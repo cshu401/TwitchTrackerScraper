@@ -142,4 +142,28 @@ public class Streamer {
         return Objects.hash(nameUrl);
     }
 
+    
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Streamer Details:\n");
+        sb.append("ID: ").append(id).append("\n");
+        sb.append("Name URL: ").append(nameUrl).append("\n");
+        sb.append("Last Scraped: ").append(lastScraped).append("\n");
+        sb.append("Minutes Streamed: ").append(minutesStreamed).append("\n");
+        sb.append("Average Viewers: ").append(averageViewers).append("\n");
+        sb.append("Peak Viewers: ").append(peakViewers).append("\n");
+        sb.append("Hours Watched: ").append(hoursWatched).append("\n");
+        sb.append("Followers Per Hour: ").append(followersPerHour).append("\n");
+        sb.append("Followers: ").append(followers).append("\n");
+        sb.append("Streams:\n");
+
+        for (Streams stream : streams) {
+            sb.append(" - ").append(stream.toString()).append("\n");
+            // Assuming Streams class has an overridden toString() method
+        }
+
+        return sb.toString();
+    }
+
 }

@@ -2,11 +2,8 @@ import java.util.List;
 
 public class UserInterface {
 
-
-
-    public static void displayMenu() {
     
-        
+    public static void displayMenu() {
         // Top Border
         System.out.println("░▀█▀░█░█░▀█▀░▀█▀░█▀▀░█░█░░░▀█▀░█▀▄░█▀█░█▀▀░█░█░█▀▀░█▀▄░░░█▀▀░█▀▀░█▀▄░█▀█░█▀█░█▀▀░█▀▄");
         System.out.println("░░█░░█▄█░░█░░░█░░█░░░█▀█░░░░█░░█▀▄░█▀█░█░░░█▀▄░█▀▀░█▀▄░░░▀▀█░█░░░█▀▄░█▀█░█▀▀░█▀▀░█▀▄");
@@ -15,54 +12,29 @@ public class UserInterface {
         System.out.println(new String(new char[50]).replace("\0", "-"));
         System.out.println("Loading.....");
 
-
         int sizeChecker = StreamerTools.getAllStreamers().size();
-    
-        //Database size
-        
-        System.out.println("The database is currently populated by " +sizeChecker+" streamers \n");
-    
+
+        // Database size
+        System.out.println("The database is currently populated by " + sizeChecker + " streamers \n");
+
         // Menu Options
         System.out.println("1. Scrape HTML for Streamers");
-        System.out.println("2. Extract Data to Excel");
-        System.out.println("3. Update Database");
-        System.out.println("4. Search Users");
-        System.out.println("5. Search Streams");
-    
+        System.out.println("2. Add Streamer to Database");
+        System.out.println("3. Delete Streamer from Database");
+        System.out.println("4. Update all streamers");
+        System.out.println("5. Export Database to Excel");
+        System.out.println("6. Return all Streamers");
+        System.out.println("7. Search Streamer by URL");
+        //System.out.println("8. Search Streams");
+        System.out.println("9. Add Streamers/ Update existing streamer");
+        System.out.println("10. Delete Streamers");
+        System.out.println("20. Exit");
+
         // Bottom Border
         System.out.println(new String(new char[50]).replace("\0", "-"));
         System.out.print("Enter your choice: ");
     }
 
-    public static void displayDatabaseMenu() {
-        System.out.println("\n--- JPQL Search Operations ---");
-        System.out.println("1. Search by Name URL");
-        System.out.println("2. Return all streamers");
-        System.out.println("3. Search by Followers");
-        System.out.println("4. Return to Main Menu");
-        System.out.print("Enter your choice: ");
-    }
-
-    public static void displayStreamerData(Streamer streamer){
-        System.out.println("NameUrl: " + streamer.getNameUrl());
-        System.out.println("Followers: " + streamer.getFollowers());
-        System.out.println("Average Viewers: " + streamer.getAverageViewers());
-        System.out.println("Peak Viewers: " + streamer.getPeakViewers());
-        System.out.println("Hours Watched: " + streamer.getHoursWatched());
-        System.out.println("Followers Per Hour: " + streamer.getFollowersPerHour());
-        System.out.println("Minutes Streamed: " + streamer.getMinutesStreamed());
-        System.out.println("Last scraped: " + streamer.getLastScraped());
-
-        List<Streams> streams = streamer.getStreams();
-        for(Streams stream :streams){
-            System.out.println("title: " + stream.getTitle() +
-            ", date: " + stream.getDate() +
-            ", averageViews: " + stream.getAverageViews() +
-            ", maxViews: " + stream.getMaxViews() +
-            ", followers: " + stream.getFollowers() +
-            ", durationMinutes: " + stream.getDurationMinutes());
-        }
-    }
 
     public static String promptStringInput(String message) {
         System.out.print(message + ": ");
