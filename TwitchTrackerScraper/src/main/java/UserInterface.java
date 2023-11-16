@@ -1,3 +1,6 @@
+import Domain.Streamer;
+import Utils.StreamerTools;
+
 import java.util.List;
 
 public class UserInterface {
@@ -19,13 +22,13 @@ public class UserInterface {
 
         // Menu Options
         System.out.println("1. Scrape HTML for Streamers");
-        System.out.println("2. Add Streamer to Database");
-        System.out.println("3. Delete Streamer from Database");
+        System.out.println("2. Add Domain.Streamer to Database");
+        System.out.println("3. Delete Domain.Streamer from Database");
         System.out.println("4. Update all streamers");
         System.out.println("5. Export Database to Excel");
         System.out.println("6. Return all Streamers");
-        System.out.println("7. Search Streamer by URL");
-        //System.out.println("8. Search Streams");
+        System.out.println("7. Search Domain.Streamer by URL");
+        //System.out.println("8. Search Domain.Streams");
         System.out.println("9. Add Streamers/ Update existing streamer");
         System.out.println("10. Delete Streamers");
         System.out.println("20. Exit");

@@ -1,4 +1,4 @@
-
+package Utils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;

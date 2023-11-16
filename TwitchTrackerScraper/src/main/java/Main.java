@@ -1,14 +1,8 @@
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import javax.persistence.*;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import Domain.Streamer;
+import Utils.DatabaseTools;
+import Utils.StreamerTools;
 
 import java.util.Scanner;
 
@@ -35,12 +29,12 @@ public class Main {
                     System.out.println("Update complete!!!");
                     break;
                 case 2:
-                    // Add Streamer
+                    // Add Domain.Streamer
                     String input = UserInterface.promptStringInput("Please enter the name of the streamer you wish to add: ");
                     DatabaseTools.addStreamer(input);
                     break;
                 case 3:
-                    // Delete Streamer
+                    // Delete Domain.Streamer
                     String input1 = UserInterface.promptStringInput("Please enter the name of the streamer you wish to delete: ");
                     DatabaseTools.deleteStreamer(input1);
                     break;
@@ -65,7 +59,7 @@ public class Main {
                     
                     break;
                 case 8:
-                    // Search Streams (implement as needed)
+                    // Search Domain.Streams (implement as needed)
                     break;
                 case 9:
                     String streameraddinput = UserInterface.promptStringInput("Please enter the streamer you wish to add... ");

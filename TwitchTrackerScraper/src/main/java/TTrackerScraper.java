@@ -4,6 +4,10 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import Domain.Streamer;
+import Domain.Streams;
+import Utils.JPAUtil;
+import Utils.StreamerTools;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -13,7 +17,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
-import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -248,7 +251,7 @@ public class TTrackerScraper {
      */
     public static void createOrUpdateStreamers(List<String> streamerNames, EntityManager em) {
         for (String nameUrl : streamerNames) {
-            String jpql = "SELECT s FROM Streamer s WHERE s.nameUrl = :nameUrl";
+            String jpql = "SELECT s FROM Domain.Streamer s WHERE s.nameUrl = :nameUrl";
             List<Streamer> existingStreamers = em.createQuery(jpql, Streamer.class)
                                                  .setParameter("nameUrl", nameUrl)
                                                  .getResultList();
@@ -260,7 +263,7 @@ public class TTrackerScraper {
                 System.out.println("Created streamer " + newStreamer.getNameUrl());
                 em.persist(newStreamer);
             } else {
-                // If a Streamer with this nameUrl already exists, you can update it
+                // If a Domain.Streamer with this nameUrl already exists, you can update it
                 Streamer existingStreamer = existingStreamers.get(0);
                 System.out.println(existingStreamer.getNameUrl() + " already exists");
                 // Update properties of existingStreamer as needed
@@ -312,7 +315,7 @@ public class TTrackerScraper {
         EntityManager em = JPAUtil.getEntityManager();  
         em.getTransaction().begin();
         
-        TypedQuery<Streamer> query = em.createQuery("SELECT s FROM Streamer s", Streamer.class);
+        TypedQuery<Streamer> query = em.createQuery("SELECT s FROM Domain.Streamer s", Streamer.class);
         List<Streamer> retStreamers = query.getResultList();
 
         for(Streamer streamer: retStreamers){

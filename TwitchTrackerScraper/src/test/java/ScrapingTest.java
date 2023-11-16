@@ -1,10 +1,10 @@
+import Domain.Streamer;
+import Domain.Streams;
 import org.junit.jupiter.api.*;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import java.time.LocalDateTime;
 import javax.persistence.TypedQuery;
-import javax.persistence.PersistenceException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -41,7 +41,7 @@ class ScrapingTest {
     @Test
     void testScrapeStreams(){
         //create a streamer called ixivt
-        Streamer ixivt = new Streamer("mizkif"); // Make sure the Streamer class is defined and has a constructor that takes a string
+        Streamer ixivt = new Streamer("mizkif"); // Make sure the Domain.Streamer class is defined and has a constructor that takes a string
         TTrackerScraper scraper = new TTrackerScraper(); // Make sure the TTrackerScraper class is defined and has the scrapeAllStreams method
         scraper.scrapeAllStreams(ixivt); // Assuming scrapeAllStreams returns a List of Stream objects
     }
@@ -66,7 +66,7 @@ class ScrapingTest {
             scraper.scrapeAllStreams(ixivt); // This method should commit the streams to the database
 
             // Query the database for streams associated with mizkif
-            TypedQuery<Streams> query = em.createQuery("SELECT s FROM Streams s WHERE s.streamer.nameUrl = :nameUrl", Streams.class);
+            TypedQuery<Streams> query = em.createQuery("SELECT s FROM Domain.Streams s WHERE s.streamer.nameUrl = :nameUrl", Streams.class);
             query.setParameter("nameUrl", "ixivt");
             List<Streams> resultStreams = query.getResultList();
 

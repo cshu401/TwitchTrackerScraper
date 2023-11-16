@@ -1,3 +1,8 @@
+package Utils;
+
+import Domain.Streamer;
+import Utils.JPAUtil;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -6,28 +11,28 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
 /**
- * This class provides utility methods for working with Streamer objects.
+ * This class provides utility methods for working with Domain.Streamer objects.
  */
 /**
- * The StreamerTools class provides utility methods for working with Streamer objects in the database.
+ * The Utils.StreamerTools class provides utility methods for working with Domain.Streamer objects in the database.
  */
 public class StreamerTools {
 
     /**
-     * Returns a list of all Streamer objects in the database.
+     * Returns a list of all Domain.Streamer objects in the database.
      *
-     * @return a list of all Streamer objects in the database
+     * @return a list of all Domain.Streamer objects in the database
      */
     public static List<Streamer> getAllStreamers() {
-        // Create a JPQL query to select all Streamer objects
-        String jpql = "SELECT s FROM Streamer s";
+        // Create a JPQL query to select all Domain.Streamer objects
+        String jpql = "SELECT s FROM Domain.Streamer s";
 
-        EntityManager em = JPAUtil.getEntityManager();  
+        EntityManager em = JPAUtil.getEntityManager();
 
         // Create the query
         Query query = em.createQuery(jpql);
 
-        // Execute the query and return the results as a list of Streamer objects
+        // Execute the query and return the results as a list of Domain.Streamer objects
         List<Streamer> streamers = query.getResultList();
 
         return streamers;
@@ -35,24 +40,24 @@ public class StreamerTools {
 
     
     /**
-     * This method retrieves a Streamer object from the database by its nameUrl.
+     * This method retrieves a Domain.Streamer object from the database by its nameUrl.
      *
-     * @param nameUrl the nameUrl of the Streamer to retrieve
-     * @return the Streamer object with the given nameUrl, or null if not found
+     * @param nameUrl the nameUrl of the Domain.Streamer to retrieve
+     * @return the Domain.Streamer object with the given nameUrl, or null if not found
      */
     public static Streamer getStreamerByNameUrl(String nameUrl) {
         EntityManager em = JPAUtil.getEntityManager();
         Streamer streamer = null;
         try {
-            // Create a JPQL query to select the Streamer object with the given nameUrl
-            String jpql = "SELECT s FROM Streamer s WHERE s.nameUrl = :nameUrl";
+            // Create a JPQL query to select the Domain.Streamer object with the given nameUrl
+            String jpql = "SELECT s FROM Domain.Streamer s WHERE s.nameUrl = :nameUrl";
     
             // Create and execute the query
             Query query = em.createQuery(jpql);
             query.setParameter("nameUrl", nameUrl);
             List<Streamer> results = query.getResultList();
     
-            // Check if the result list is not empty and get the first Streamer
+            // Check if the result list is not empty and get the first Domain.Streamer
             if (!results.isEmpty()) {
                 streamer = results.get(0);
             } else {

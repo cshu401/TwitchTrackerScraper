@@ -1,3 +1,5 @@
+import Domain.Streamer;
+import Domain.Streams;
 import org.junit.jupiter.api.*;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -5,7 +7,6 @@ import javax.persistence.Persistence;
 import java.time.LocalDateTime;
 import javax.persistence.TypedQuery;
 import javax.persistence.PersistenceException;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.DynamicTest.stream;
@@ -62,7 +63,7 @@ class HibernateDatabaseTests {
         em.persist(newStreamer);
         em.getTransaction().commit();
 
-        TypedQuery<Streamer> query = em.createQuery("SELECT s FROM Streamer s WHERE s.nameUrl = :nameUrl", Streamer.class);
+        TypedQuery<Streamer> query = em.createQuery("SELECT s FROM Domain.Streamer s WHERE s.nameUrl = :nameUrl", Streamer.class);
         query.setParameter("nameUrl", "find_test_streamer");
         Streamer foundStreamer = query.getSingleResult();
 

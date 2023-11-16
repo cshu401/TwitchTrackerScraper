@@ -1,3 +1,8 @@
+package Utils;
+
+import Domain.Streamer;
+import Utils.JPAUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,18 +19,18 @@ public class DatabaseTools {
         try {
             transaction.begin();
 
-            TypedQuery<Streamer> query = em.createQuery("SELECT s FROM Streamer s WHERE s.nameUrl = :nameUrl", Streamer.class);
+            TypedQuery<Streamer> query = em.createQuery("SELECT s FROM Domain.Streamer s WHERE s.nameUrl = :nameUrl", Streamer.class);
             query.setParameter("nameUrl", streamerUrl);
             List<Streamer> existingStreamers = query.getResultList();
             if (existingStreamers.get(0) == null) {
-                System.out.println("Streamer not found with ID: " + streamerUrl);
+                System.out.println("Domain.Streamer not found with ID: " + streamerUrl);
                 return false;
             }
 
             em.remove(existingStreamers.get(0));
 
             transaction.commit();
-            System.out.println("Streamer deleted successfully.");
+            System.out.println("Domain.Streamer deleted successfully.");
             return true;
         } catch (Exception e) {
             if (transaction.isActive()) {
@@ -41,7 +46,7 @@ public class DatabaseTools {
     
     public static boolean addStreamer(String streamerUrl) {
         if (streamerUrl == null || streamerUrl.isEmpty()) {
-            System.out.println("Streamer URL cannot be null or empty.");
+            System.out.println("Domain.Streamer URL cannot be null or empty.");
             return false;
         }
 

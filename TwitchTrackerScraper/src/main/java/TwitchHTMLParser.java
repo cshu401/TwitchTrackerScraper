@@ -1,3 +1,5 @@
+import Domain.Streamer;
+import Utils.JPAUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -128,13 +130,13 @@ public class TwitchHTMLParser {
     }
 
     /**
-     * Creates Streamer entities from a list of usernames and persists them in the database.
+     * Creates Domain.Streamer entities from a list of usernames and persists them in the database.
      * The method uses JPA EntityManager to begin a transaction, persist the streamer entities, and commit the transaction.
      *
-     * @param streamerNames a list of Twitch streamer usernames to be persisted as Streamer entities.
+     * @param streamerNames a list of Twitch streamer usernames to be persisted as Domain.Streamer entities.
      */
     public static void createStreamerFromNames(List<String> streamerNames ) {
-        EntityManager em = JPAUtil.getEntityManager();  
+        EntityManager em = JPAUtil.getEntityManager();
         em.getTransaction().begin();
 
         for (String streamerName : streamerNames) {
@@ -144,7 +146,7 @@ public class TwitchHTMLParser {
 
         em.getTransaction().commit();
 
-        TypedQuery<Streamer> query = em.createQuery("SELECT s FROM Streamer s", Streamer.class);
+        TypedQuery<Streamer> query = em.createQuery("SELECT s FROM Domain.Streamer s", Streamer.class);
         List<Streamer> reteNames = query.getResultList();
 
         System.out.println("restSize: "+ reteNames.size());

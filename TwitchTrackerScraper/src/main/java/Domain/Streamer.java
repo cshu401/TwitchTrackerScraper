@@ -1,3 +1,5 @@
+package Domain;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +36,7 @@ public class Streamer {
     // Constructor with nameUrl parameter
     public Streamer(String nameUrl) {
         if(nameUrl == null || nameUrl.isEmpty()) {
-            throw new IllegalArgumentException("Streamer nameUrl cannot be null or empty");
+            throw new IllegalArgumentException("Domain.Streamer nameUrl cannot be null or empty");
         }
         this.nameUrl = nameUrl;
     }
@@ -146,7 +148,7 @@ public class Streamer {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Streamer Details:\n");
+        sb.append("Domain.Streamer Details:\n");
         sb.append("ID: ").append(id).append("\n");
         sb.append("Name URL: ").append(nameUrl).append("\n");
         sb.append("Last Scraped: ").append(lastScraped).append("\n");
@@ -156,11 +158,11 @@ public class Streamer {
         sb.append("Hours Watched: ").append(hoursWatched).append("\n");
         sb.append("Followers Per Hour: ").append(followersPerHour).append("\n");
         sb.append("Followers: ").append(followers).append("\n");
-        sb.append("Streams:\n");
+        sb.append("Domain.Streams:\n");
 
         for (Streams stream : streams) {
             sb.append(" - ").append(stream.toString()).append("\n");
-            // Assuming Streams class has an overridden toString() method
+            // Assuming Domain.Streams class has an overridden toString() method
         }
 
         return sb.toString();

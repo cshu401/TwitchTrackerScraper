@@ -1,3 +1,7 @@
+package Domain;
+
+import Domain.Streamer;
+
 import java.time.LocalDateTime;
 
 import javax.persistence.*;
@@ -10,7 +14,7 @@ public class Streams {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "streamer_id") // This will create a foreign key column in 'Streams' table.
+    @JoinColumn(name = "streamer_id") // This will create a foreign key column in 'Domain.Streams' table.
     private Streamer streamer;
 
     // Other fields that might be relevant for a Stream, like title, date, etc.

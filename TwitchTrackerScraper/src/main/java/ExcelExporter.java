@@ -1,3 +1,5 @@
+import Domain.Streamer;
+import Utils.JPAUtil;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -12,8 +14,8 @@ public class ExcelExporter {
         em.getTransaction().begin();
 
         try {
-            // Retrieve all Streamer objects from the database
-            TypedQuery<Streamer> query = em.createQuery("SELECT s FROM Streamer s", Streamer.class);
+            // Retrieve all Domain.Streamer objects from the database
+            TypedQuery<Streamer> query = em.createQuery("SELECT s FROM Domain.Streamer s", Streamer.class);
             List<Streamer> streamerList = query.getResultList();
 
             // Create a workbook and a sheet
@@ -21,7 +23,7 @@ public class ExcelExporter {
             Sheet sheet = workbook.createSheet("Streamers");
 
             // Create a header row
-            String[] columns = {"ID", "Name URL", "Last Scraped", "Minutes Streamed", "Average Viewers", "Peak Viewers", "Hours Watched", "Followers Per Hour", "Followers", /* More columns for Streams data if needed */};
+            String[] columns = {"ID", "Name URL", "Last Scraped", "Minutes Streamed", "Average Viewers", "Peak Viewers", "Hours Watched", "Followers Per Hour", "Followers", /* More columns for Domain.Streams data if needed */};
             createHeaderRow(sheet, columns);
 
             // Populate the sheet with data
@@ -38,7 +40,7 @@ public class ExcelExporter {
                 row.createCell(6).setCellValue(streamer.getHoursWatched());
                 row.createCell(7).setCellValue(streamer.getFollowersPerHour());
                 row.createCell(8).setCellValue(streamer.getFollowers());
-                // More cells for Streams data if needed, e.g., number of streams, average duration, etc.
+                // More cells for Domain.Streams data if needed, e.g., number of streams, average duration, etc.
             }
 
             // Resize all columns to fit the content size
