@@ -1,44 +1,52 @@
-import Domain.Streamer;
-import Domain.Streams;
+import Api.Domain.Streamer;
+import Api.Domain.Streams;
 import org.junit.jupiter.api.*;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import java.time.LocalDateTime;
-import javax.persistence.TypedQuery;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.PersistenceException;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.DynamicTest.stream;
+import org.springframework.boot.test.context.SpringBootTest;
+import Api.MainApplication;
 
+@SpringBootTest(classes = MainApplication.class) // Use this annotation to load the full Spring context
+//@DataJpaTest
 class HibernateDatabaseTests {
 
-    private static EntityManagerFactory emf;
+    //private static EntityManagerFactory emf;
+
+    @Autowired
     private EntityManager em;
 
-    @BeforeAll
-    static void setupEntityManagerFactory() {
-        emf = Persistence.createEntityManagerFactory("MyAppPersistenceUnit"); // Use a separate persistence unit for tests
-    }
+    // @BeforeAll
+    // static void setupEntityManagerFactory() {
+    //     emf = Persistence.createEntityManagerFactory("MyAppPersistenceUnit"); // Use a separate persistence unit for tests
+    // }
 
-    @BeforeEach
-    void setupEntityManager() {
-        em = emf.createEntityManager();
-    }
+    // @BeforeEach
+    // void setupEntityManager() {
+    //     em = emf.createEntityManager();
+    // }
 
-    @AfterEach
-    void closeEntityManager() {
-        if (em.isOpen()) {
-            em.close();
-        }
-    }
+    // @AfterEach
+    // void closeEntityManager() {
+    //     if (em.isOpen()) {
+    //         em.close();
+    //     }
+    // }
 
-    @AfterAll
-    static void closeEntityManagerFactory() {
-        if (emf.isOpen()) {
-            emf.close();
-        }
-    }
+    // @AfterAll
+    // static void closeEntityManagerFactory() {
+    //     if (emf.isOpen()) {
+    //         emf.close();
+    //     }
+    // }
 
     @Test
     void testCreateStreamerAndStream() {
@@ -179,6 +187,15 @@ class HibernateDatabaseTests {
         // Assert
         Streams deletedStream = em.find(Streams.class, streamId);
         assertNull(deletedStream);
+    }
+
+    @Test
+    public void creatingCustomStreamer() {
+        em.getTransaction().begin();
+        Streamer newStreamer = new Streamer("ixi_vt");
+        em.persist(newStreamer);
+        em.getTransaction().commit();
+        // Additional assertions or operations
     }
 
 

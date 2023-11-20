@@ -1,14 +1,17 @@
-package Utils;
+package Api.HibernateUtils;
 
-import Domain.Streamer;
-import Utils.JPAUtil;
+import Api.Domain.Streamer;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Query;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+
+
+import org.springframework.stereotype.Service;
 
 /**
  * This class provides utility methods for working with Domain.Streamer objects.
@@ -16,21 +19,23 @@ import javax.persistence.Query;
 /**
  * The Utils.StreamerTools class provides utility methods for working with Domain.Streamer objects in the database.
  */
+@Service
 public class StreamerTools {
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     /**
      * Returns a list of all Domain.Streamer objects in the database.
      *
      * @return a list of all Domain.Streamer objects in the database
      */
-    public static List<Streamer> getAllStreamers() {
+    public List<Streamer> getAllStreamers() {
         // Create a JPQL query to select all Domain.Streamer objects
         String jpql = "SELECT s FROM Domain.Streamer s";
 
-        EntityManager em = JPAUtil.getEntityManager();
-
         // Create the query
-        Query query = em.createQuery(jpql);
+        Query query = entityManager.createQuery(jpql);
 
         // Execute the query and return the results as a list of Domain.Streamer objects
         List<Streamer> streamers = query.getResultList();
@@ -45,30 +50,29 @@ public class StreamerTools {
      * @param nameUrl the nameUrl of the Domain.Streamer to retrieve
      * @return the Domain.Streamer object with the given nameUrl, or null if not found
      */
-    public static Streamer getStreamerByNameUrl(String nameUrl) {
-        EntityManager em = JPAUtil.getEntityManager();
+    public Streamer getStreamerByNameUrl(String nameUrl) {
         Streamer streamer = null;
         try {
             // Create a JPQL query to select the Domain.Streamer object with the given nameUrl
             String jpql = "SELECT s FROM Domain.Streamer s WHERE s.nameUrl = :nameUrl";
     
             // Create and execute the query
-            Query query = em.createQuery(jpql);
+            Query query = entityManager.createQuery(jpql);
             query.setParameter("nameUrl", nameUrl);
             List<Streamer> results = query.getResultList();
     
-            // Check if the result list is not empty and get the first Domain.Streamer
+            // Check if the result list is not entityManagerpty and get the first Domain.Streamer
             if (!results.isEmpty()) {
                 streamer = results.get(0);
             } else {
-                // Return an error code if the result list is empty
+                // Return an error code if the result list is entityManagerpty
                 streamer = new Streamer();
                 streamer.setId(-1L);
             }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            em.close();
+            entityManager.close();
         }
         return streamer;
     }
@@ -78,10 +82,10 @@ public class StreamerTools {
      * WARNING: This method should only be used for development purposes.
      * Deletes all data from all tables in the database.
      *
-     * @param em the EntityManager to use for the transaction
+     * @param entityManager the EntityManager to use for the transaction
      */
-    public static void clearAllTables(EntityManager em) {
-        EntityTransaction transaction = em.getTransaction();
+    public void clearAllTables() {
+        EntityTransaction transaction = entityManager.getTransaction();
         boolean wasAlreadyActive = transaction.isActive();
     
         try {
@@ -91,20 +95,20 @@ public class StreamerTools {
             }
     
             // Get the names of all tables
-            List<String> tableNames = em.getMetamodel().getEntities().stream()
+            List<String> tableNames = entityManager.getMetamodel().getEntities().stream()
                     .map(e -> e.getName())
                     .collect(Collectors.toList());
     
             // Disable foreign key checks to prevent constraint violation errors
-            em.createNativeQuery("SET FOREIGN_KEY_CHECKS = 0").executeUpdate();
+            entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS = 0").executeUpdate();
     
             // Truncate each table
             for (String tableName : tableNames) {
-                em.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
+                entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
             }
     
             // Re-enable foreign key checks
-            em.createNativeQuery("SET FOREIGN_KEY_CHECKS = 1").executeUpdate();
+            entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS = 1").executeUpdate();
     
             // Only commit if we've started the transaction in this method
             if (!wasAlreadyActive) {

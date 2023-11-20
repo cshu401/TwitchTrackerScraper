@@ -1,26 +1,32 @@
-import java.util.List;
+package Api.Client;
 
-import Domain.Streamer;
-import Utils.DatabaseTools;
-import Utils.StreamerTools;
-
+import Api.HibernateUtils.StreamerTools;
+import Api.Scraper.TTrackerScraper;
+import Api.HibernateUtils.DatabaseTools;
 import java.util.Scanner;
 
 
-
-
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
 public class Main {
 
     static Scanner scanner = new Scanner(System.in);
+    private UserInterface userInterface;
+    private TTrackerScraper tTrackerScraper;
 
+    public Main() {
+        this.userInterface = new UserInterface();
+        this.tTrackerScraper = new TTrackerScraper();
+    }
 
     public static void main(String[] args) {
-        TTrackerScraper scraper = new TTrackerScraper();
+        Main mainApp = new Main();  // Creating an instance of Mainz
+        mainApp.runApp();  // Running the application
+    }
+
+    private void runApp() {
+        StreamerTools streamerTools = new StreamerTools();
 
         while (true) {
-            UserInterface.displayMenu();
+            userInterface.displayMenu();
             int choice = scanner.nextInt();
 
             switch (choice) {
@@ -39,7 +45,7 @@ public class Main {
                     DatabaseTools.deleteStreamer(input1);
                     break;
                 case 4:
-                    TTrackerScraper.scrapeAllStreamers(scraper);
+                    //TTrackerScraper.scrapeAllStreamers(scraper);
                     break;
                 case 5:
                     System.out.println("Exporting to Excel...");
@@ -48,23 +54,23 @@ public class Main {
                     break;
                 case 6:
                     // Return all streamers
-                    List<Streamer> AllStreamers = StreamerTools.getAllStreamers();
-                    UserInterface.printStreamersPerLine(AllStreamers, 8);
+                    // List<Streamer> AllStreamers = StreamerTools.getAllStreamers();
+                    // UserInterface.printStreamersPerLine(AllStreamers, 8);
                     break;
                 case 7:
                     // Search by Streamers (implement as needed)
-                    String stremerSearchInput = UserInterface.promptStringInput("Please enter the streamer you wish to search for... ");
-                    Streamer searchStreamerReturn = StreamerTools.getStreamerByNameUrl(stremerSearchInput);
-                    System.out.println(searchStreamerReturn.toString());
+                    // String stremerSearchInput = UserInterface.promptStringInput("Please enter the streamer you wish to search for... ");
+                    // Streamer searchStreamerReturn = StreamerTools.getStreamerByNameUrl(stremerSearchInput);
+                    // System.out.println(searchStreamerReturn.toString());
                     
                     break;
                 case 8:
                     // Search Domain.Streams (implement as needed)
                     break;
                 case 9:
-                    String streameraddinput = UserInterface.promptStringInput("Please enter the streamer you wish to add... ");
-                    DatabaseTools.addStreamer(streameraddinput);
-                    TTrackerScraper.scrapeSingleStreamer(streameraddinput);
+                    // String streameraddinput = UserInterface.promptStringInput("Please enter the streamer you wish to add... ");
+                    // DatabaseTools.addStreamer(streameraddinput);
+                    // TTrackerScraper.scrapeSingleStreamer(streameraddinput);
                     break;
                 case 10:
                     String streamerDeleteInput = UserInterface.promptStringInput("Please enter the streamer you wish to delete... ");
@@ -76,8 +82,9 @@ public class Main {
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
+            }
         }
-
     }
-}
+
+
 

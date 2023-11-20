@@ -1,10 +1,11 @@
-import Domain.Streamer;
-import Domain.Streams;
+import Api.Domain.Streamer;
+import Api.Domain.Streams;
+import Api.Scraper.TTrackerScraper;
 import org.junit.jupiter.api.*;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+import jakarta.persistence.TypedQuery;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,7 +43,7 @@ class ScrapingTest {
     void testScrapeStreams(){
         //create a streamer called ixivt
         Streamer ixivt = new Streamer("mizkif"); // Make sure the Domain.Streamer class is defined and has a constructor that takes a string
-        TTrackerScraper scraper = new TTrackerScraper(); // Make sure the TTrackerScraper class is defined and has the scrapeAllStreams method
+        TTrackerScraper scraper = new TTrackerScraper(); // Make sure the Scraper.TTrackerScraper class is defined and has the scrapeAllStreams method
         scraper.scrapeAllStreams(ixivt); // Assuming scrapeAllStreams returns a List of Stream objects
     }
 

@@ -1,5 +1,7 @@
-import Domain.Streamer;
-import Utils.JPAUtil;
+package Api.Scraper;
+
+import Api.Domain.Streamer;
+import Api.HibernateUtils.JPAUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -11,8 +13,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 
 
 public class TwitchHTMLParser {

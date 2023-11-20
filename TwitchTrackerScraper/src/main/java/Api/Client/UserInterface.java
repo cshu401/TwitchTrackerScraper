@@ -1,12 +1,19 @@
-import Domain.Streamer;
-import Utils.StreamerTools;
+package Api.Client;
+
+import Api.Domain.Streamer;
+import Api.HibernateUtils.StreamerTools;
 
 import java.util.List;
+import java.util.Scanner;
 
 public class UserInterface {
 
+    static Scanner scanner = new Scanner(System.in);
+
+    private StreamerTools streamerTools = new StreamerTools();
+
     
-    public static void displayMenu() {
+    public void displayMenu() {
         // Top Border
         System.out.println("░▀█▀░█░█░▀█▀░▀█▀░█▀▀░█░█░░░▀█▀░█▀▄░█▀█░█▀▀░█░█░█▀▀░█▀▄░░░█▀▀░█▀▀░█▀▄░█▀█░█▀█░█▀▀░█▀▄");
         System.out.println("░░█░░█▄█░░█░░░█░░█░░░█▀█░░░░█░░█▀▄░█▀█░█░░░█▀▄░█▀▀░█▀▄░░░▀▀█░█░░░█▀▄░█▀█░█▀▀░█▀▀░█▀▄");
@@ -15,7 +22,7 @@ public class UserInterface {
         System.out.println(new String(new char[50]).replace("\0", "-"));
         System.out.println("Loading.....");
 
-        int sizeChecker = StreamerTools.getAllStreamers().size();
+        int sizeChecker = streamerTools.getAllStreamers().size();
 
         // Database size
         System.out.println("The database is currently populated by " + sizeChecker + " streamers \n");
@@ -41,8 +48,8 @@ public class UserInterface {
 
     public static String promptStringInput(String message) {
         System.out.print(message + ": ");
-        Main.scanner.nextLine(); // Consume any leftover newline character
-        return Main.scanner.nextLine(); // Wait for and return the user's input
+        scanner.nextLine(); // Consume any leftover newline character
+        return scanner.nextLine(); // Wait for and return the user's input
     }
 
     public static void printStreamersPerLine(List<Streamer> streamers, int wordsPerLine) {
@@ -103,3 +110,4 @@ public class UserInterface {
     }
 
 }
+    

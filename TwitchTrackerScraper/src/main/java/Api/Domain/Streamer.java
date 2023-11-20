@@ -1,10 +1,10 @@
-package Domain;
+package Api.Domain;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 public class Streamer {

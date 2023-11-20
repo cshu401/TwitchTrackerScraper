@@ -1,13 +1,17 @@
+package Api.Scraper;
+
 import java.net.URI;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 
-import Domain.Streamer;
-import Domain.Streams;
-import Utils.JPAUtil;
-import Utils.StreamerTools;
+import Api.Client.UserInterface;
+import Api.Domain.Streamer;
+import Api.Domain.Streams;
+import Api.HibernateUtils.StreamerTools;
+import Api.SpringUtils.StreamerRepository;
+import Api.HibernateUtils.JPAUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -23,7 +27,12 @@ import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.io.IOException;
+import java.util.Optional;
+
 import com.google.gson.JsonElement;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 
 /**
@@ -31,7 +40,13 @@ import com.google.gson.JsonElement;
  * It includes methods for scraping basic details of a streamer, scraping all streams of a streamer, and scraping all streamers in a list.
  * The class uses Jsoup for web scraping and JPA for database operations.
  */
+@Service
 public class TTrackerScraper {
+
+    private Api.HibernateUtils.StreamerTools StreamerTools = new StreamerTools();
+
+    @Autowired
+    private StreamerRepository streamerRepository;
 
 
     /**
@@ -47,9 +62,7 @@ public class TTrackerScraper {
         String responseBody = null;
         int maxRetryAttempts = 5;
         long retryDelayMillis = 5000; // 5 seconds delay
-        EntityManager em = JPAUtil.getEntityManager();
-        em.getTransaction().begin();
-    
+
         while (retryCount < maxRetryAttempts && !success) {
             String url = "https://twitchtracker.com/api/channels/summary/" + streamer.getNameUrl();
             System.out.println("url: " + url);
@@ -84,12 +97,16 @@ public class TTrackerScraper {
                     streamer.setHoursWatched(hoursWatched);
                     streamer.setLastScrapedToNow();
 
-                    if (!em.contains(streamer)) {
-                    em.merge(streamer); // Use merge instead of persist
+                    Optional<Streamer> streamerOptional = streamerRepository.findByNameUrl(streamer.getNameUrl());
+
+                    if (streamerOptional.isPresent()) {
+                        streamer = streamerOptional.get();
+                        // Update the streamer object with scraped data
                     } else {
-                        em.persist(streamer);
+                        streamer = new Streamer(streamer.getNameUrl());
+                        // Set scraped data to the new streamer object
                     }
-                    em.getTransaction().commit();
+                    streamerRepository.save(streamer);
                         
 
                     success = true;
@@ -111,8 +128,6 @@ public class TTrackerScraper {
                 
             }
         }
-
-        em.close();
     
         if (!success) {
             System.out.println("Failed to retrieve data after " + maxRetryAttempts + " retries.");
@@ -237,7 +252,7 @@ public class TTrackerScraper {
             em.close();
         }
     
-        // TTrackerScraper scraper = new TTrackerScraper();
+        // Scraper.TTrackerScraper scraper = new Scraper.TTrackerScraper();
         // scrapeAllStreamers(scraper);  // This method needs to handle its own EntityManager
     }
 
@@ -271,7 +286,7 @@ public class TTrackerScraper {
         }
     }
 
-    public static void scrapeSingleStreamer(String streamerUrl){
+    public void scrapeSingleStreamer(String streamerUrl){
         EntityManager em = JPAUtil.getEntityManager();  
         em.getTransaction().begin();
         TTrackerScraper scraper = new TTrackerScraper();
@@ -290,9 +305,9 @@ public class TTrackerScraper {
     /**
      * Initiates scraping of basic details and all streams for a list of streamers.
      *
-     * @param scraper the TTrackerScraper instance used for scraping operations.
+     * @param scraper the Scraper.TTrackerScraper instance used for scraping operations.
      */
-    public static void scrapeAllStreamers(TTrackerScraper scraper ){
+    public void scrapeAllStreamers(TTrackerScraper scraper ){
         List<Streamer> streamers = StreamerTools.getAllStreamers();
         int count = 0;
         int total = streamers.size();

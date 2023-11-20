@@ -1,9 +1,11 @@
-import Domain.Streamer;
-import Utils.JPAUtil;
+package Api.Client;
+
+import Api.Domain.Streamer;
+import Api.HibernateUtils.JPAUtil;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.FileOutputStream;
 import java.util.List;
 
