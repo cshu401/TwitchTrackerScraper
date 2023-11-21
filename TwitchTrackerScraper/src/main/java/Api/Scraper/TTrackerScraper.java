@@ -9,8 +9,9 @@ import jakarta.persistence.TypedQuery;
 import Api.Client.UserInterface;
 import Api.Domain.Streamer;
 import Api.Domain.Streams;
+import Api.Domain.StreamsRepository;
 import Api.HibernateUtils.StreamerTools;
-import Api.SpringUtils.StreamerRepository;
+import Api.Domain.StreamerRepository;
 import Api.HibernateUtils.JPAUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -47,6 +48,9 @@ public class TTrackerScraper {
 
     @Autowired
     private StreamerRepository streamerRepository;
+
+    @Autowired
+    private StreamsRepository streamRepository;
 
 
     /**
@@ -156,7 +160,6 @@ public class TTrackerScraper {
      * @param streamer the streamer whose streams are to be scraped.
      */
     public void scrapeAllStreams(Streamer streamer) {
-        EntityManager em = JPAUtil.getEntityManager();
     
         int maxRetries = 3; // Maximum number of retries
         int retryDelay = 5000; // Delay in milliseconds (5000 ms = 5 seconds)
@@ -166,7 +169,6 @@ public class TTrackerScraper {
     
         while (retryCount < maxRetries && !success) {
             try {
-                em.getTransaction().begin();
     
                 String url = "https://twitchtracker.com/" + streamer.getNameUrl() + "/streams";
                 Document doc = Jsoup.connect(url).get();
@@ -193,12 +195,11 @@ public class TTrackerScraper {
                     stream.setStreamer(streamer);
                     streamer.addStream(stream);
     
-                    em.persist(stream);
+                    //streamRepository.save(stream);
                 }
     
-                em.merge(streamer);
-                em.getTransaction().commit();
-
+                streamerRepository.save(streamer);
+                
                 success = true; // Scrape was successful, no need to retry
             } catch (Exception e) {
                 // Log the exception and retry
@@ -206,10 +207,7 @@ public class TTrackerScraper {
                 e.printStackTrace();
                 retryCount++; // Increment retry attempt counter
     
-                if (em.getTransaction().isActive()) {
-                    em.getTransaction().rollback(); // Roll back if the transaction is still active
-                }
-    
+
                 if (retryCount < maxRetries) {
                     try {
                         Thread.sleep(retryDelay); // Delay before the next retry
@@ -223,8 +221,6 @@ public class TTrackerScraper {
         if (!success) {
             System.out.println("Scraping failed after " + maxRetries + " attempts.");
         }
-
-         em.close();
     }
     
 

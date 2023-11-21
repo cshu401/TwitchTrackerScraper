@@ -19,7 +19,7 @@ public class Streams {
     // For example:
     private String title;
 
-    @Column(unique = true)
+    //@Column(unique = true)
     private LocalDateTime date;
 
     private int averageViews = 0;

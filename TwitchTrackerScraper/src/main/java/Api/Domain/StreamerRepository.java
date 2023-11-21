@@ -1,4 +1,4 @@
-package Api.SpringUtils;
+package Api.Domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import Api.Domain.Streamer;

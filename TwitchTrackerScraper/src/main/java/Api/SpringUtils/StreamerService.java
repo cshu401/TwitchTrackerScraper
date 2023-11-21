@@ -1,10 +1,12 @@
 package Api.SpringUtils;
 
 
+import Api.Domain.StreamerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import Api.Domain.Streamer;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -45,6 +47,11 @@ public class StreamerService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public List<Streamer> getAllStreamers(){
+        return streamerRepository.findAll();
+
     }
 
 
