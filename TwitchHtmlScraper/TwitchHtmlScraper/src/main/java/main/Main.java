@@ -40,6 +40,9 @@ public class Main {
         } catch (Exception e) {
             System.out.println("An error occurred: " + e.getMessage());
         }
+
+        System.out.println("Press Enter to exit...");
+        scanner.nextLine();
     
         scanner.close();
     }
