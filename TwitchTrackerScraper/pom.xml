@@ -22,11 +22,6 @@
 
         <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-entitymanager -->
 
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>1.4.200</version> <!-- Use a stable version -->
-        </dependency>
 
         <dependency>
             <groupId>org.mongodb</groupId>
