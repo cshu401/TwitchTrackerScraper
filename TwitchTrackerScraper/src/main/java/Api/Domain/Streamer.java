@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -16,6 +19,7 @@ public class Streamer {
     @Column(unique = true, nullable = false)
     private String nameUrl;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "streamer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Streams> streams = new ArrayList<>();
 

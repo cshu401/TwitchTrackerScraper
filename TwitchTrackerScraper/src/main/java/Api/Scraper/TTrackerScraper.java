@@ -303,13 +303,13 @@ public class TTrackerScraper {
      *
      * @param scraper the Scraper.TTrackerScraper instance used for scraping operations.
      */
-    public void scrapeAllStreamers(TTrackerScraper scraper ){
+    public void scrapeAllStreamers(){
         List<Streamer> streamers = StreamerTools.getAllStreamers();
         int count = 0;
         int total = streamers.size();
         for (Streamer streamer : streamers) {
-            scraper.scrapeBasicDetails(streamer);
-            scraper.scrapeAllStreams(streamer);
+            scrapeBasicDetails(streamer);
+            scrapeAllStreams(streamer);
             UserInterface.printLoadingBar(count,total, 50);
             count++;
         }

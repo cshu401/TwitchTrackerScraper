@@ -28,6 +28,12 @@
             <version>1.4.200</version> <!-- Use a stable version -->
         </dependency>
 
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>4.11.1</version>
+        </dependency>
+
 
 
 
