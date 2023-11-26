@@ -12,25 +12,9 @@
         <maven.compiler.source>19</maven.compiler.source>
         <maven.compiler.target>19</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <hibernate.version>5.6.15</hibernate.version>
     </properties>
 
     <dependencies>
-
-    
-        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
-
-        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-entitymanager -->
-
-
-        <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongodb-driver-sync</artifactId>
-            <version>4.11.1</version>
-        </dependency>
-
-
-
 
         <dependency>
           <!-- jsoup HTML parser library @ https://jsoup.org/ -->
@@ -141,6 +125,22 @@
             <version>3.1.5</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.28</version> <!-- Use the latest compatible version -->
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc -->
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>12.4.2.jre11</version>
+        </dependency>
+
+
+
 
 
 

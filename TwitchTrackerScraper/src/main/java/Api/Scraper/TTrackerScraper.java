@@ -1,6 +1,7 @@
 package Api.Scraper;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.EntityManager;
@@ -11,6 +12,7 @@ import Api.Domain.Streamer;
 import Api.Domain.Streams;
 import Api.Domain.StreamsRepository;
 import Api.HibernateUtils.StreamerTools;
+import Api.SpringUtils.StreamerService;
 import Api.Domain.StreamerRepository;
 import Api.HibernateUtils.JPAUtil;
 import org.jsoup.Jsoup;
@@ -29,11 +31,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.gson.JsonElement;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 /**
@@ -50,8 +55,14 @@ public class TTrackerScraper {
     private StreamerRepository streamerRepository;
 
     @Autowired
-    private StreamsRepository streamRepository;
+    private StreamsRepository streamsRepository;
 
+    @Autowired
+    private StreamerService streamerService;
+
+
+    private AtomicInteger curScrape = new AtomicInteger(0);
+    private AtomicInteger totalScrape = new AtomicInteger(0);
 
     /**
      * Scrapes basic details of a given streamer and stores them in the database.
@@ -148,7 +159,13 @@ public class TTrackerScraper {
     }
 
 
+    public int getCurScrape(){
+        return this.curScrape.get();
+    }
 
+    public int getTotalScrape(){
+        return this.totalScrape.get();
+    }
 
 
 
@@ -160,12 +177,20 @@ public class TTrackerScraper {
      * @param streamer the streamer whose streams are to be scraped.
      */
     public void scrapeAllStreams(Streamer streamer) {
+        final int MAX_STREAMS = 50; // Maximum number of streams to scrape
+        int streamCount = 0;
     
         int maxRetries = 3; // Maximum number of retries
         int retryDelay = 5000; // Delay in milliseconds (5000 ms = 5 seconds)
         int retryCount = 0; // Current retry attempt
     
         boolean success = false; // Flag to indicate if the scraping was successful
+
+        List<Streams> streamsBatch = new ArrayList<>();
+
+        List<Streams> recentStreams = streamsRepository.findTop100ByStreamerOrderByDateDesc(streamer);
+
+
     
         while (retryCount < maxRetries && !success) {
             try {
@@ -179,8 +204,12 @@ public class TTrackerScraper {
                 // Select all 'tr' elements from the table body 'tbody'
                 Elements rows = table.select("tbody tr");
     
+                //Scroll through each stream
                 for (Element row : rows) {
                     // Extract data for each column
+                    if (streamCount >= MAX_STREAMS) {
+                        break; // Exit the loop if the maximum number of streams is reached
+                    }
                     String dateStr = row.select("td").get(0).text();
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                     LocalDateTime date = LocalDateTime.parse(dateStr, formatter);
@@ -192,13 +221,24 @@ public class TTrackerScraper {
                     String views = row.select("td").get(5).text();
                     String title = row.select("td").get(6).text();
                     Streams stream = new Streams(title, date, avgCCV, maxCCV, followers, durationMin);
-                    stream.setStreamer(streamer);
-                    streamer.addStream(stream);
-    
-                    //streamRepository.save(stream);
+
+                     // Check if the stream already exists in the recentStreams list
+                    boolean streamExists = recentStreams.stream().anyMatch(existing -> existing.getDate().equals(date) && existing.getTitle().equals(title));
+
+                    if (!streamExists) {
+                        stream.setStreamer(streamer);
+                        streamer.addStream(stream);
+                        streamsBatch.add(stream);
+                    }else{
+                        System.out.println("Stream already exists");
+                    }
+                    
+                    streamCount++;
+                    
                 }
     
-                streamerRepository.save(streamer);
+
+                
                 
                 success = true; // Scrape was successful, no need to retry
             } catch (Exception e) {
@@ -217,15 +257,35 @@ public class TTrackerScraper {
                 }
             }
         }
+
+        System.out.println("streamsBatch size: " + streamsBatch.size());
+        if (!streamsBatch.isEmpty()) {
+            streamsRepository.saveAll(streamsBatch); // Save all streams at once
+        }
     
         if (!success) {
             System.out.println("Scraping failed after " + maxRetries + " attempts.");
         }
     }
+
+    @Async
+    @Transactional
+    public void scrapeStreamerList(List<String> streamerList){
+        Streamer streamer;
+        this.curScrape.set(0);
+        this.totalScrape.set(streamerList.size());
+        for (String streamerUrl : streamerList) {
+            streamerService.addStreamer(streamerUrl);
+            streamer = streamerService.getStreamer(streamerUrl);
+            scrapeBasicDetails(streamer);
+            scrapeAllStreams(streamer);
+            this.curScrape.incrementAndGet();
+        }
+    }
     
 
 
-    /**
+    /** 
      * Scrapes TwitchTracker for all streamers' basic details and their streams.
      * This method is responsible for managing its own EntityManager.
      */

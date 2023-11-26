@@ -66,14 +66,22 @@ public class DatabaseController {
             return ResponseEntity.ok("Streamer scraped successfully.");
         }
 
-        @PostMapping("/scrapeList") void scrapeList(@RequestBody List<String> streamerList){
-            Streamer streamer;
-            for (String streamerUrl : streamerList) {
-                streamerService.addStreamer(streamerUrl);
-                streamer = streamerService.getStreamer(streamerUrl);
-                tScraper.scrapeBasicDetails(streamer);
-                tScraper.scrapeAllStreams(streamer);
+        @PostMapping("/scrapeList") ResponseEntity<String> scrapeList(@RequestBody List<String> streamerList){
+            try{
+                tScraper.scrapeStreamerList(streamerList);
+                return ResponseEntity.ok("Scrape started, use endpoint scrapeStatus to check status...");
+            } catch (Exception e) {
+                return ResponseEntity.badRequest().body("Failed to scrape streamer list.");
             }
+        }
+
+        
+        @GetMapping("/scrapeStatus")
+        public ResponseEntity<String> getScrapeStatus() {
+            int current = tScraper.getCurScrape();
+            int total = tScraper.getTotalScrape();
+            String status = "Current scraping progress: " + current + " out of " + total;
+            return ResponseEntity.ok(status);
         }
 
 
