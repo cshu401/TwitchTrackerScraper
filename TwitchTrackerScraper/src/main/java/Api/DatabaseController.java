@@ -86,8 +86,6 @@ public class DatabaseController {
 
 
         
-
-    
         @DeleteMapping("/delete")
         public ResponseEntity<String> deleteStreamer(@RequestParam String streamerUrl) {
             boolean isDeleted = streamerService.deleteStreamer(streamerUrl);
