@@ -142,12 +142,6 @@
 
     </dependencies>
 
-    <distributionManagement>
-        <repository>
-            <id>your-repo-id</id>
-            <url>https://github.com/cshu401/TwitchTrackerScraper</url>
-        </repository>
-    </distributionManagement>
 
     <build>
         <plugins>
