@@ -23,7 +23,7 @@ jobs:
 
       - name: Build with Maven
         run: mvn clean install
-        working-directory: pom.xml
+        working-directory: ./TwitchTrackerScraper/TwitchTrackerScraper
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
