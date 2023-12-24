@@ -2,77 +2,65 @@ package Api.HibernateUtils;
 
 
 import Api.Domain.Streamer;
+import Api.Domain.StreamerRepository;
 import Api.Scraper.TTrackerScraper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.TypedQuery;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DatabaseTools {
 
-    public static boolean deleteStreamer(String streamerUrl) {
-        EntityManager em = JPAUtil.getEntityManager();
-        EntityTransaction transaction = em.getTransaction();
+    @Autowired
+    private StreamerRepository streamerRepository;
 
+    public boolean deleteStreamer(String streamerUrl) {
         try {
-            transaction.begin();
-
-            TypedQuery<Streamer> query = em.createQuery("SELECT s FROM Domain.Streamer s WHERE s.nameUrl = :nameUrl", Streamer.class);
-            query.setParameter("nameUrl", streamerUrl);
-            List<Streamer> existingStreamers = query.getResultList();
-            if (existingStreamers.get(0) == null) {
-                System.out.println("Domain.Streamer not found with ID: " + streamerUrl);
+            Optional<Streamer> optionalStreamer = streamerRepository.findByNameUrl(streamerUrl);
+            Streamer streamer = optionalStreamer.orElse(new Streamer()); // Default Streamer object
+            if (streamer != null) {
+                streamerRepository.delete(streamer);
+                System.out.println("Streamer deleted successfully.");
+                return true;
+            } else {
+                System.out.println("Streamer not found with URL: " + streamerUrl);
                 return false;
             }
-
-            em.remove(existingStreamers.get(0));
-
-            transaction.commit();
-            System.out.println("Domain.Streamer deleted successfully.");
-            return true;
         } catch (Exception e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
             e.printStackTrace();
             return false;
-        } finally {
-            em.close();
         }
     }
 
     
-    public static boolean addStreamer(String streamerUrl) {
+    public boolean addStreamer(String streamerUrl) {
         if (streamerUrl == null || streamerUrl.isEmpty()) {
-            System.out.println("Domain.Streamer URL cannot be null or empty.");
+            System.out.println("Streamer URL cannot be null or empty.");
             return false;
         }
-
-        EntityManager em = JPAUtil.getEntityManager();
-        EntityTransaction transaction = em.getTransaction();
 
         try {
-            transaction.begin();
-            List<String> streamerNames = new ArrayList<>();
-            streamerNames.add(streamerUrl);
-            TTrackerScraper.createOrUpdateStreamers(streamerNames, em);
+            // Check if the streamer already exists
+            Optional<Streamer> existingStreamer = streamerRepository.findByNameUrl(streamerUrl);
+            Streamer streamer = existingStreamer.orElseGet(() -> {
+                Streamer newStreamer = new Streamer();
+                newStreamer.setNameUrl(streamerUrl);
+                // Set other properties of newStreamer as needed
+                return newStreamer;
+            });
+
+            // Save the streamer (creates new or updates existing)
+            streamerRepository.save(streamer);
+            System.out.println("Streamer added or updated successfully.");
             return true;
         } catch (Exception e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
             e.printStackTrace();
             return false;
-        } finally {
-            em.close();
         }
     }
-
     
 }

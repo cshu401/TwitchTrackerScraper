@@ -2,7 +2,6 @@ package Api;
 
 import Api.Domain.Streamer;
 import Api.SpringUtils.StreamerService;
-import Api.HibernateUtils.StreamerTools;
 import Api.Scraper.TTrackerScraper;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,6 @@ public class DatabaseController {
 
         @PostMapping("/addListStreamers")
         public ResponseEntity<String> addListStreamers(@RequestParam String streamerUrl){
-            StreamerTools streamerTools = new StreamerTools();
             return null;
         }
     

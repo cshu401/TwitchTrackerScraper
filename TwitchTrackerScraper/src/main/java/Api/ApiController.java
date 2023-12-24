@@ -2,7 +2,6 @@ package Api;
 
 import Api.Domain.Streamer;
 import Api.SpringUtils.StreamerService;
-import Api.HibernateUtils.StreamerTools;
 import Api.Scraper.TTrackerScraper;
 
 import org.springframework.beans.factory.annotation.Autowired;
