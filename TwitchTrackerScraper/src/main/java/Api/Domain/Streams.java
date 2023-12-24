@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class Streams {
 
     @Id
-    private Long id;
+    private String id;
 
     @DBRef
     private Streamer streamer;
@@ -80,11 +80,11 @@ public class Streams {
     }
 
     // Getter and setter for id
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

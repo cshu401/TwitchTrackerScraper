@@ -107,15 +107,15 @@ public class TTrackerScraper {
                     streamer.setHoursWatched(hoursWatched);
                     streamer.setLastScrapedToNow();
 
-                    Optional<Streamer> streamerOptional = streamerRepository.findByNameUrl(streamer.getNameUrl());
+                    //Optional<Streamer> streamerOptional = streamerRepository.findByNameUrl(streamer.getNameUrl());
 
-                    if (streamerOptional.isPresent()) {
-                        streamer = streamerOptional.get();
-                        // Update the streamer object with scraped data
-                    } else {
-                        streamer = new Streamer(streamer.getNameUrl());
-                        // Set scraped data to the new streamer object
-                    }
+                    // if (streamerOptional.isPresent()) {
+                    //     streamer = streamerOptional.get();
+                    //     // Update the streamer object with scraped data
+                    // } else {
+                    //     streamer = new Streamer(streamer.getNameUrl());
+                    //     // Set scraped data to the new streamer object
+                    // }
                     streamerRepository.save(streamer);
                         
 

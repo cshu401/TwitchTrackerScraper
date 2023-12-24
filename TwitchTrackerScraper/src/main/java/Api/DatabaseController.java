@@ -36,10 +36,6 @@ public class DatabaseController {
             }
         }
 
-        @PostMapping("/addListStreamers")
-        public ResponseEntity<String> addListStreamers(@RequestParam String streamerUrl){
-            return null;
-        }
     
         @PostMapping("/addScrape")
         public ResponseEntity<String> addStreamerAndScrape(@RequestParam String streamerUrl) {

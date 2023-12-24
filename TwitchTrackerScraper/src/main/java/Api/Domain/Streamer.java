@@ -13,7 +13,7 @@ import java.util.Objects;
 public class Streamer {
 
     @Id
-    private Long id;
+    private String id;
 
     private String nameUrl;
 
@@ -102,11 +102,11 @@ public class Streamer {
     }
 
     // Getters and Setters
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

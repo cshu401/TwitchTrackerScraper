@@ -1,6 +1,7 @@
 package Api;
 
 import Api.Domain.Streamer;
+import Api.Domain.StreamsRepository;
 import Api.SpringUtils.StreamerService;
 import Api.Scraper.TTrackerScraper;
 
@@ -18,6 +19,9 @@ public class ApiController {
     
     @Autowired
     private StreamerService streamerService;
+
+    @Autowired
+    private StreamsRepository streamsRepository;
 
     @Autowired
     private TTrackerScraper tScraper;
