@@ -1,21 +1,23 @@
 package Api.Domain;
 
-import java.time.LocalDateTime;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import jakarta.persistence.*;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
-@Entity
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import java.time.LocalDateTime;
+
+@Document
 public class Streams {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonBackReference
-    @ManyToOne
-    @JoinColumn(name = "streamer_id") // This will create a foreign key column in 'Domain.Streams' table.
+    @DBRef
     private Streamer streamer;
 
     // Other fields that might be relevant for a Stream, like title, date, etc.
