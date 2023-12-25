@@ -1,7 +1,6 @@
 package Api.Scraper;
 
 import Api.Domain.Streamer;
-import Api.HibernateUtils.JPAUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -13,8 +12,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
 
 
 public class TwitchHTMLParser {
@@ -137,22 +134,22 @@ public class TwitchHTMLParser {
      *
      * @param streamerNames a list of Twitch streamer usernames to be persisted as Domain.Streamer entities.
      */
-    public static void createStreamerFromNames(List<String> streamerNames ) {
-        EntityManager em = JPAUtil.getEntityManager();
-        em.getTransaction().begin();
+    // public static void createStreamerFromNames(List<String> streamerNames ) {
+    //     EntityManager em = JPAUtil.getEntityManager();
+    //     em.getTransaction().begin();
 
-        for (String streamerName : streamerNames) {
-            Streamer streamer = new Streamer(streamerName);
-            em.persist(streamer);
-        }
+    //     for (String streamerName : streamerNames) {
+    //         Streamer streamer = new Streamer(streamerName);
+    //         em.persist(streamer);
+    //     }
 
-        em.getTransaction().commit();
+    //     em.getTransaction().commit();
 
-        TypedQuery<Streamer> query = em.createQuery("SELECT s FROM Domain.Streamer s", Streamer.class);
-        List<Streamer> reteNames = query.getResultList();
+    //     TypedQuery<Streamer> query = em.createQuery("SELECT s FROM Domain.Streamer s", Streamer.class);
+    //     List<Streamer> reteNames = query.getResultList();
 
-        System.out.println("restSize: "+ reteNames.size());
+    //     System.out.println("restSize: "+ reteNames.size());
 
-        em.close();
-    }
+    //     em.close();
+    // }
 }

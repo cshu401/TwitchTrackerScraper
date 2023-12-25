@@ -1,15 +1,11 @@
 package Api.Domain;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import Api.Domain.Streams;
-
 import java.util.List;
-import java.util.Optional;
 
-public interface StreamsRepository extends JpaRepository<Streams, Long> {
+public interface StreamsRepository extends MongoRepository<Streams, Long> {
     // Define custom query methods here
-
-
     List<Streams> findByStreamer(Streamer streamer);
 
     List<Streams> findTop100ByStreamerOrderByDateDesc(Streamer streamer);

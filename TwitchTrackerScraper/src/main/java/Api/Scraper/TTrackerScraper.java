@@ -4,17 +4,11 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
-
-import Api.Client.UserInterface;
 import Api.Domain.Streamer;
 import Api.Domain.Streams;
 import Api.Domain.StreamsRepository;
-import Api.HibernateUtils.StreamerTools;
 import Api.SpringUtils.StreamerService;
 import Api.Domain.StreamerRepository;
-import Api.HibernateUtils.JPAUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -23,6 +17,9 @@ import org.jsoup.select.Elements;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.UpdateOptions;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -40,7 +37,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 /**
  * This class provides methods for scraping data from TwitchTracker.com and storing it in a database.
  * It includes methods for scraping basic details of a streamer, scraping all streams of a streamer, and scraping all streamers in a list.
@@ -49,7 +45,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TTrackerScraper {
 
-    private Api.HibernateUtils.StreamerTools StreamerTools = new StreamerTools();
 
     @Autowired
     private StreamerRepository streamerRepository;
@@ -112,15 +107,15 @@ public class TTrackerScraper {
                     streamer.setHoursWatched(hoursWatched);
                     streamer.setLastScrapedToNow();
 
-                    Optional<Streamer> streamerOptional = streamerRepository.findByNameUrl(streamer.getNameUrl());
+                    //Optional<Streamer> streamerOptional = streamerRepository.findByNameUrl(streamer.getNameUrl());
 
-                    if (streamerOptional.isPresent()) {
-                        streamer = streamerOptional.get();
-                        // Update the streamer object with scraped data
-                    } else {
-                        streamer = new Streamer(streamer.getNameUrl());
-                        // Set scraped data to the new streamer object
-                    }
+                    // if (streamerOptional.isPresent()) {
+                    //     streamer = streamerOptional.get();
+                    //     // Update the streamer object with scraped data
+                    // } else {
+                    //     streamer = new Streamer(streamer.getNameUrl());
+                    //     // Set scraped data to the new streamer object
+                    // }
                     streamerRepository.save(streamer);
                         
 
@@ -289,71 +284,59 @@ public class TTrackerScraper {
      * Scrapes TwitchTracker for all streamers' basic details and their streams.
      * This method is responsible for managing its own EntityManager.
      */
-    public static void scrapeWholeHTML(){
-        EntityManager em = JPAUtil.getEntityManager();  
-        try {
-            em.getTransaction().begin();
+    // public static void scrapeWholeHTML(){
+    //     EntityManager em = JPAUtil.getEntityManager();  
+    //     try {
+    //         em.getTransaction().begin();
     
-            List<String> streamerNames = TwitchHTMLParser.getUsernames("TwitchHTML//twitch.html");
-            System.out.println("scrapeWholeDoc retrieved names: " + streamerNames.size());
-            createOrUpdateStreamers(streamerNames, em);  // Modified method for creating/updating streamers
+    //         List<String> streamerNames = TwitchHTMLParser.getUsernames("TwitchHTML//twitch.html");
+    //         System.out.println("scrapeWholeDoc retrieved names: " + streamerNames.size());
+    //         createOrUpdateStreamers(streamerNames, em);  // Modified method for creating/updating streamers
     
-            em.getTransaction().commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
-        } finally {
-            em.close();
-        }
+    //         em.getTransaction().commit();
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //         if (em.getTransaction().isActive()) {
+    //             em.getTransaction().rollback();
+    //         }
+    //     } finally {
+    //         em.close();
+    //     }
     
-        // Scraper.TTrackerScraper scraper = new Scraper.TTrackerScraper();
-        // scrapeAllStreamers(scraper);  // This method needs to handle its own EntityManager
-    }
+    //     // Scraper.TTrackerScraper scraper = new Scraper.TTrackerScraper();
+    //     // scrapeAllStreamers(scraper);  // This method needs to handle its own EntityManager
+    // }
 
 
-    /**
-     * Creates or updates a list of streamers in the database.
-     * New streamers are persisted, and existing streamers can be updated as needed.
-     *
-     * @param streamerNames a list of streamer names to be created or updated.
-     * @param em the EntityManager used to perform JPA operations.
-     */
-    public static void createOrUpdateStreamers(List<String> streamerNames, EntityManager em) {
+    public void createOrUpdateStreamers(List<String> streamerNames) {
         for (String nameUrl : streamerNames) {
-            String jpql = "SELECT s FROM Domain.Streamer s WHERE s.nameUrl = :nameUrl";
-            List<Streamer> existingStreamers = em.createQuery(jpql, Streamer.class)
-                                                 .setParameter("nameUrl", nameUrl)
-                                                 .getResultList();
-    
-            if (existingStreamers.isEmpty()) {
+            Optional<Streamer> existingStreamer = streamerRepository.findByNameUrl(nameUrl);
+
+            if (!existingStreamer.isPresent()) {
+                // If the streamer doesn't exist, create a new one
                 Streamer newStreamer = new Streamer();
                 newStreamer.setNameUrl(nameUrl);
                 // Set other properties of newStreamer as needed
+                streamerRepository.save(newStreamer);
                 System.out.println("Created streamer " + newStreamer.getNameUrl());
-                em.persist(newStreamer);
             } else {
-                // If a Domain.Streamer with this nameUrl already exists, you can update it
-                Streamer existingStreamer = existingStreamers.get(0);
-                System.out.println(existingStreamer.getNameUrl() + " already exists");
-                // Update properties of existingStreamer as needed
+                // If a Streamer with this nameUrl already exists, you can update it
+                Streamer streamerToUpdate = existingStreamer.get();
+                // Update properties of streamerToUpdate as needed
+                streamerRepository.save(streamerToUpdate);
+                System.out.println(streamerToUpdate.getNameUrl() + " already exists, updated details");
             }
         }
     }
 
     public void scrapeSingleStreamer(String streamerUrl){
-        EntityManager em = JPAUtil.getEntityManager();  
-        em.getTransaction().begin();
         TTrackerScraper scraper = new TTrackerScraper();
 
-        Streamer streamer = StreamerTools.getStreamerByNameUrl(streamerUrl);
-        
+        Optional<Streamer> optionalStreamer = streamerRepository.findByNameUrl(streamerUrl);
+        Streamer streamer = optionalStreamer.orElse(new Streamer()); // Default Streamer object
         
         scraper.scrapeBasicDetails(streamer);
         scraper.scrapeAllStreams(streamer);
-        em.getTransaction().commit();
-        em.close();
     }
     
 
@@ -364,14 +347,10 @@ public class TTrackerScraper {
      * @param scraper the Scraper.TTrackerScraper instance used for scraping operations.
      */
     public void scrapeAllStreamers(){
-        List<Streamer> streamers = StreamerTools.getAllStreamers();
-        int count = 0;
-        int total = streamers.size();
+        List<Streamer> streamers = streamerRepository.findAll();
         for (Streamer streamer : streamers) {
             scrapeBasicDetails(streamer);
             scrapeAllStreams(streamer);
-            UserInterface.printLoadingBar(count,total, 50);
-            count++;
         }
     }
 
@@ -382,18 +361,18 @@ public class TTrackerScraper {
 
 
     //depreciated
-    public static void updateAllStreamers(){
-        EntityManager em = JPAUtil.getEntityManager();  
-        em.getTransaction().begin();
+    // public static void updateAllStreamers(){
+    //     EntityManager em = JPAUtil.getEntityManager();  
+    //     em.getTransaction().begin();
         
-        TypedQuery<Streamer> query = em.createQuery("SELECT s FROM Domain.Streamer s", Streamer.class);
-        List<Streamer> retStreamers = query.getResultList();
+    //     TypedQuery<Streamer> query = em.createQuery("SELECT s FROM Domain.Streamer s", Streamer.class);
+    //     List<Streamer> retStreamers = query.getResultList();
 
-        for(Streamer streamer: retStreamers){
-            ///scrapeBasicDetails(streamer);
-        }
-        em.close();
-    }
+    //     for(Streamer streamer: retStreamers){
+    //         ///scrapeBasicDetails(streamer);
+    //     }
+    //     em.close();
+    // }
 
 
 

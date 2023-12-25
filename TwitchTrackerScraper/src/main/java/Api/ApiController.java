@@ -1,8 +1,8 @@
 package Api;
 
 import Api.Domain.Streamer;
+import Api.Domain.StreamsRepository;
 import Api.SpringUtils.StreamerService;
-import Api.HibernateUtils.StreamerTools;
 import Api.Scraper.TTrackerScraper;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +19,9 @@ public class ApiController {
     
     @Autowired
     private StreamerService streamerService;
+
+    @Autowired
+    private StreamsRepository streamsRepository;
 
     @Autowired
     private TTrackerScraper tScraper;

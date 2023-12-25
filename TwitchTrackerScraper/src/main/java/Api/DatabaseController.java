@@ -1,8 +1,11 @@
+/**
+ * This class represents a controller for managing the database operations related to streamers.
+ * It provides endpoints for adding, scraping, updating, and deleting streamers.
+ */
 package Api;
 
 import Api.Domain.Streamer;
 import Api.SpringUtils.StreamerService;
-import Api.HibernateUtils.StreamerTools;
 import Api.Scraper.TTrackerScraper;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,11 @@ public class DatabaseController {
     
         private static final Logger log = LoggerFactory.getLogger(DatabaseController.class);
 
+/**
+     * Endpoint for adding a streamer to the database.
+     * @param streamerUrl The URL of the streamer to be added.
+     * @return ResponseEntity indicating the success or failure of the operation.
+     */
         @PostMapping("/add")
         public ResponseEntity<String> addStreamer(@RequestParam String streamerUrl) {
             boolean isAdded = streamerService.addStreamer(streamerUrl);
@@ -37,12 +45,11 @@ public class DatabaseController {
             }
         }
 
-        @PostMapping("/addListStreamers")
-        public ResponseEntity<String> addListStreamers(@RequestParam String streamerUrl){
-            StreamerTools streamerTools = new StreamerTools();
-            return null;
-        }
-    
+    /**
+     * Endpoint for adding a streamer to the database and scraping their details.
+     * @param streamerUrl The URL of the streamer to be added and scraped.
+     * @return ResponseEntity indicating the success or failure of the operation.
+     */
         @PostMapping("/addScrape")
         public ResponseEntity<String> addStreamerAndScrape(@RequestParam String streamerUrl) {
             try{
@@ -58,6 +65,11 @@ public class DatabaseController {
             }
         }
 
+/**
+     * Endpoint for scraping the details of a streamer.
+     * @param streamerUrl The URL of the streamer to be scraped.
+     * @return ResponseEntity indicating the success or failure of the operation.
+     */
         @PostMapping("/Scrape")
         public ResponseEntity<String> scrapeStreamer(@RequestParam String streamerUrl) {
             Streamer streamer = streamerService.getStreamer(streamerUrl);
@@ -66,7 +78,13 @@ public class DatabaseController {
             return ResponseEntity.ok("Streamer scraped successfully.");
         }
 
-        @PostMapping("/scrapeList") ResponseEntity<String> scrapeList(@RequestBody List<String> streamerList){
+        /**
+     * Endpoint for scraping the details of a list of streamers.
+     * @param streamerList The list of streamer URLs to be scraped.
+     * @return ResponseEntity indicating the success or failure of the operation.
+     */
+    @PostMapping("/scrapeList")
+    ResponseEntity<String> scrapeList(@RequestBody List<String> streamerList){
             try{
                 tScraper.scrapeStreamerList(streamerList);
                 return ResponseEntity.ok("Scrape started, use endpoint scrapeStatus to check status...");
@@ -75,7 +93,10 @@ public class DatabaseController {
             }
         }
 
-        
+        /**
+     * Endpoint for retrieving the current scraping status.
+     * @return ResponseEntity containing the current scraping progress.
+     */
         @GetMapping("/scrapeStatus")
         public ResponseEntity<String> getScrapeStatus() {
             int current = tScraper.getCurScrape();
@@ -83,9 +104,29 @@ public class DatabaseController {
             String status = "Current scraping progress: " + current + " out of " + total;
             return ResponseEntity.ok(status);
         }
-
-
         
+    /**
+     * Endpoint for updating streamers based on a threshold value.
+     * @param threshold The threshold value for updating streamers.
+     * @return ResponseEntity indicating the success or failure of the operation.
+     */
+        @PostMapping("/updateStreamers")
+        public ResponseEntity<String> updateStreamers(@RequestParam int threshold) {
+            try {
+                List<String> streamers = streamerService.findStreamersToUpdate(threshold);
+                tScraper.scrapeStreamerList(streamers);
+                return ResponseEntity.ok("Good! scraping " + streamers.size() + " amount of streamers");
+            } 
+            catch (Exception e) {
+                return ResponseEntity.badRequest().body("Failed to scrape streamer list.");
+            }
+        }
+
+    /**
+     * Endpoint for deleting a streamer from the database.
+     * @param streamerUrl The URL of the streamer to be deleted.
+     * @return ResponseEntity indicating the success or failure of the operation.
+     */
         @DeleteMapping("/delete")
         public ResponseEntity<String> deleteStreamer(@RequestParam String streamerUrl) {
             boolean isDeleted = streamerService.deleteStreamer(streamerUrl);

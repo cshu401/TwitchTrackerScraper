@@ -1,26 +1,24 @@
 package Api.Domain;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import jakarta.persistence.*;
-
-@Entity
+@Document
 public class Streamer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @Column(unique = true, nullable = false)
     private String nameUrl;
 
-    @JsonManagedReference
-    @OneToMany(mappedBy = "streamer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    //Change to list of ID's for better performance
+    @DBRef
     private List<Streams> streams = new ArrayList<>();
 
     private LocalDateTime lastScraped;
@@ -104,11 +102,11 @@ public class Streamer {
     }
 
     // Getters and Setters
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
