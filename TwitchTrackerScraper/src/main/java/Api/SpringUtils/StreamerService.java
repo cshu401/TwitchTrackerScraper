@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import Api.Domain.Streamer;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class StreamerService {
@@ -70,6 +72,17 @@ public class StreamerService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public List<String> findStreamersToUpdate(int numDays) {
+        // Define the threshold date
+        LocalDateTime threshold = LocalDateTime.now().minusDays(numDays);
+    
+        // Query the database for streamers last scraped before the threshold
+        List<Streamer> streamersToRescrape = streamerRepository.findByLastScrapedBefore(threshold);
+        List<String> streamersAsStrings = streamersToRescrape.stream().map(Streamer::toString).collect(Collectors.toList());
+    
+        return streamersAsStrings;
     }
 
     // Other methods...
