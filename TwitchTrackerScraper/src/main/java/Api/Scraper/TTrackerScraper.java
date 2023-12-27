@@ -223,7 +223,9 @@ public class TTrackerScraper {
                     if (!streamExists) {
                         stream.setStreamer(streamer);
                         streamer.addStream(stream);
-                        streamsBatch.add(stream);
+                        streamsRepository.save(stream);
+                        // streamsBatch.add(stream);
+                        streamerRepository.save(streamer);
                     }else{
                         System.out.println("Stream already exists");
                     }
@@ -254,9 +256,9 @@ public class TTrackerScraper {
         }
 
         System.out.println("streamsBatch size: " + streamsBatch.size());
-        if (!streamsBatch.isEmpty()) {
-            streamsRepository.saveAll(streamsBatch); // Save all streams at once
-        }
+        // if (!streamsBatch.isEmpty()) {
+        //     streamsRepository.saveAll(streamsBatch); // Save all streams at once
+        // }
     
         if (!success) {
             System.out.println("Scraping failed after " + maxRetries + " attempts.");
